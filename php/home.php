@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
 
 // Carica i post
 $stmt = $conn->prepare("
-  SELECT posts.user_id, posts.id, posts.content, posts.created_at, users.name,
+  SELECT posts.user_id, posts.id, posts.content, posts.created_at, users.name, users.profile_picture,
          (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) as like_count,
          (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id AND likes.user_id = ?) as user_liked
   FROM posts
@@ -185,17 +185,20 @@ $conn->close();
   </style>
 </head>
 <body>
+    <?php include 'navbar.php'; ?>
+
   <div class="container">
     <h1>Benvenutə, <?php echo htmlspecialchars($user_name); ?>!</h1>
     <a href="friends.php">👫 Amici</a>
     <form method="POST" action="home.php">
-      <textarea name="content" placeholder="Scrivi qualcosa sul balcone..."></textarea>
+      <textarea name="content" placeholder="Condividi con il balcone affianco al tuo qualcosa..."></textarea>
       <button type="submit">Pubblica</button>
     </form>
 
 <?php foreach ($posts as $post): ?>
   <div class="post">
-    <div class="post-author"><?php echo htmlspecialchars($post['name']); ?></div>
+    <div class="post-author"><img src="../uploads/profile_pictures/<?php echo $post['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;">
+    <?php echo htmlspecialchars($post['name']); ?></div>
     <div class="post-time"><?php echo date("d/m/Y H:i", strtotime($post['created_at'])); ?></div>
     <div class="post-content"><?php echo nl2br(htmlspecialchars($post['content'])); ?></div>
 
@@ -211,7 +214,7 @@ $conn->close();
       <?php
       $conn = new mysqli('localhost', 'root', '', 'sul_balcone');
       $stmt = $conn->prepare("
-        SELECT comments.content, comments.created_at, users.name
+        SELECT users.profile_picture, comments.content, comments.created_at, users.name
         FROM comments
         JOIN users ON comments.user_id = users.id
         WHERE comments.post_id = ?
@@ -223,7 +226,7 @@ $conn->close();
       while ($comment = $comments_result->fetch_assoc()):
       ?>
         <div class="comment">
-          <strong><?php echo htmlspecialchars($comment['name']); ?>:</strong>
+          <strong><img src="../uploads/profile_pictures/<?php echo $comment['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;"><?php echo htmlspecialchars($comment['name']); ?>:</strong>
           <span><?php echo nl2br(htmlspecialchars($comment['content'])); ?></span>
           <div class="comment-time"><?php echo date("d/m/Y H:i", strtotime($comment['created_at'])); ?></div>
         </div>
@@ -234,7 +237,7 @@ $conn->close();
     <!-- Form nuovo commento -->
     <form class="comment-form" action="comment_post.php" method="POST">
       <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
-      <input type="text" name="content" placeholder="Scrivi un commento..." required>
+      <input type="text" name="content" placeholder="Reagisci a questa notizia..." required>
       <button type="submit">Invia</button>
     </form>
   </div>

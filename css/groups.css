@@ -1,0 +1,92 @@
+/* groups.css */
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0 20px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+h1 {
+  font-size: 32px;
+  margin-top: 24px;
+  color: #0077c2;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+form {
+  margin: 20px 0;
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: 'Poppins', sans-serif;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #0077c2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+.post {
+  background: white;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.post img {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.post strong {
+  font-size: 16px;
+  color: #0077c2;
+}
+
+.post small {
+  color: #888;
+  margin-left: 8px;
+}
+
+.post p {
+  margin-top: 8px;
+  white-space: pre-wrap;
+}
+
+a {
+  color: #00c8e5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

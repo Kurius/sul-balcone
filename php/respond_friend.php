@@ -11,9 +11,14 @@ if (!in_array($action, ['accept', 'decline'])) exit;
 $status = $action === 'accept' ? 'accepted' : 'declined';
 
 $conn = new mysqli('localhost', 'root', '', 'sul_balcone');
-
+if($status=='declined'){
+    $stmt = $conn->prepare("DELETE FROM friend_requests WHERE id = ? AND receiver_id = ?");
+    $stmt->bind_param("ii", $request_id, $user_id);
+}
+else{
 $stmt = $conn->prepare("UPDATE friend_requests SET status = ? WHERE id = ? AND receiver_id = ?");
 $stmt->bind_param("sii", $status, $request_id, $user_id);
+}
 $stmt->execute();
 
 $conn->close();

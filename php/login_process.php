@@ -40,10 +40,15 @@ if ($stmt->num_rows === 1) {
         header("Location: home.php");
         exit;
     } else {
-        die("Password non corretta.");
+        $_SESSION['error'] = 'Credenziali errate';
+        header("Location: ../index.php");
+        exit;
     }
-} else {
-    die("Email non registrata.");
+}
+ else {
+        $_SESSION['error'] = 'Credenziali errate';
+        header("Location: ../index.php");
+        exit;
 }
 
 $stmt->close();

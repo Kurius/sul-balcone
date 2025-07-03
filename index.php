@@ -22,14 +22,24 @@ if (isset($_SESSION['user_id'])) {
     </div>
 
     <div class="right">
-      <form action="php/login_process.php" method="POST">
-        <h2>Accedi</h2>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Entra</button>
-        <p class="register-link">Non hai un account? <a href="php/register.php">Registrati</a></p>
-      </form>
+  <?php if (isset($_SESSION['error'])): ?>
+    <div class="error-box">
+      <?php 
+        echo htmlspecialchars($_SESSION['error']); 
+        unset($_SESSION['error']);
+      ?>
     </div>
+  <?php endif; ?>
+
+  <form action="php/login_process.php" method="POST">
+    <h2>Accedi</h2>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Entra</button>
+    <p class="register-link">Non hai un account? <a href="php/register.php">Registrati</a></p>
+  </form>
+</div>
+
   </div>
 </body>
 </html>
