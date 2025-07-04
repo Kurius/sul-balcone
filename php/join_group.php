@@ -2,7 +2,7 @@
 session_start();
 $user = $_SESSION['user_id'];
 $gid = intval($_GET['id']);
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 
 $group = $conn->query("SELECT is_private, password FROM groups WHERE id = $gid")->fetch_assoc();
 
@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php if ($group['is_private']): ?>
 <form method="POST">
+    <link rel="stylesheet" href="../css/style.css">
+
   <h2>Questo gruppo è privato</h2>
   <p>Inserisci la password per entrare:</p>
   <input type="password" name="password" required>

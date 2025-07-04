@@ -1,13 +1,7 @@
 <?php
 session_start();
 
-// ⚙️ CONFIGURA I TUOI PARAMETRI QUI
-$host = 'localhost';
-$db_user = 'root';
-$db_password = '';
-$db_name = 'sul_balcone';
-
-$conn = new mysqli($host, $db_user, $db_password, $db_name);
+include 'navbar.php';
 
 // Verifica connessione
 if ($conn->connect_error) {

@@ -1,11 +1,11 @@
-<?php
+<?php 
+include 'navbar.php';
 session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
 $user_id = $_SESSION['user_id'];
 
 // Prendi dati utente
@@ -18,6 +18,8 @@ $user = $stmt->get_result()->fetch_assoc();
 
 <!DOCTYPE html>
 <html>
+    <link rel="stylesheet" href="../css/style.css">
+
 <head>
   <meta charset="UTF-8">
   <title>Modifica profilo</title>
@@ -34,15 +36,8 @@ body{
   text-align: center;
 }
 
-.profile-page h1 {
-  color: #2c3e50;
-  margin-bottom: 10px;
-}
 
-.profile-page h3 {
-  color: #34495e;
-  margin-top: 30px;
-}
+
 
 .profile-page img {
   width: 150px;
@@ -53,13 +48,8 @@ body{
   margin-top: 10px;
 }
 
-.profile-page form {
-  margin-top: 20px;
-}
 
-.profile-page input[type="file"] {
-  margin: 10px 0;
-}
+
 
 .profile-page button {
   background-color: #3498db;
@@ -83,14 +73,12 @@ body{
   font-weight: bold;
 }
 
-.profile-page a:hover {
-  text-decoration: underline;
-}
+
 
 
   </style>
 </head>
-<?php include 'navbar.php'; ?>
+
 <body>
   <div class="profile-page">
     <h1>Ciao, <?php echo htmlspecialchars($user['name']); ?></h1>
@@ -103,7 +91,6 @@ body{
       <button type="submit">Carica</button>
     </form>
 
-    <p><a href="home.php">⬅️ Torna alla home</a></p>
   </div>
 </body>
 

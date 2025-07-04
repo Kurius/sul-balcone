@@ -2,7 +2,7 @@
 session_start();
 $user=$_SESSION['user_id'];
 $id=intval($_GET['id']);
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 
 $g=$conn->query("SELECT * FROM groups WHERE id=$id")->fetch_assoc();
 $ismember=$conn->query("SELECT 1 FROM group_users WHERE group_id=$id AND user_id=$user")->num_rows;
@@ -20,9 +20,9 @@ $posts=$conn->query("
   ORDER BY gp.created_at DESC
 ");
 ?>
-<?php include 'navbar.php'; ?>
 
-<link rel="stylesheet" href="../css/groups.css">
+
+<link rel="stylesheet" href="../css/style.css">
 
 <h1><?php echo htmlspecialchars($g['name']); ?></h1>
 <p><?php echo htmlspecialchars($g['description']); ?></p>

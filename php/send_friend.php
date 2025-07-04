@@ -7,7 +7,7 @@ $receiver_id = intval($_POST['receiver_id']);
 
 if ($sender_id == $receiver_id) exit;
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 
 // Evita richieste duplicate
 $stmt = $conn->prepare("

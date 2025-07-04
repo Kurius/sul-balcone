@@ -13,7 +13,7 @@ if ($content === '') {
     exit;
 }
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 if ($conn->connect_error) exit;
 
 $stmt = $conn->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)");

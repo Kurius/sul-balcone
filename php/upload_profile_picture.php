@@ -28,7 +28,7 @@ $filename = "user_" . $user_id . "_" . time() . "." . $ext;
 $target_file = $target_dir . $filename;
 
 if (move_uploaded_file($file["tmp_name"], $target_file)) {
-    $conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+   include 'navbar.php';
 
     // opzionalmente rimuovi la vecchia immagine se non è la default
     $old = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'navbar.php';
 if (!isset($_SESSION['user_id'])) {
     http_response_code(403);
     exit;
@@ -8,7 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $post_id = intval($_POST['post_id']);
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
 if ($conn->connect_error) exit;
 
 // Controlla se il like esiste

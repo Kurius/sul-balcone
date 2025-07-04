@@ -14,7 +14,7 @@ if ($content === '') {
     exit;
 }
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 $stmt = $conn->prepare("UPDATE posts SET content = ? WHERE id = ? AND user_id = ?");
 $stmt->bind_param("sii", $content, $post_id, $user_id);
 $stmt->execute();

@@ -2,7 +2,7 @@
 session_start();
 if (!isset($_SESSION['user_id'])) header("Location: index.php");
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 $user = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['name'])) {
@@ -26,8 +26,8 @@ $joined = $conn->query("
   WHERE gu.user_id = $user
 ");
 ?>
-<?php include 'navbar.php'; ?>
-<link rel="stylesheet" href="../css/groups.css">
+
+<link rel="stylesheet" href="../css/style.css">
 
 <h1>Gruppi</h1>
 <h2>Crea nuovo gruppo:</h2>

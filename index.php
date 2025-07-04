@@ -14,7 +14,7 @@ if (isset($_SESSION['user_id'])) {
   <link rel="stylesheet" href="../css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class ="login-body">
   <div class="page">
     <div class="left">
       <h1>Sul Balcone</h1>

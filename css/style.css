@@ -1,3 +1,4 @@
+/* ====== RESET & BASE ====== */
 * {
   margin: 0;
   padding: 0;
@@ -8,19 +9,31 @@ body {
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(to right, #fef6e4, #f9f9f9);
   color: #333;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100vh;
 }
-.error-box {
-  background-color: #ffe6e6;
-  color: #cc0000;
-  padding: 10px;
-  border: 1px solid #cc0000;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  font-weight: bold;
+
+/* ====== NAVBAR ====== */
+.navbar{
+  background:linear-gradient(90deg,#f77f00,#fcbf49);
+  padding:12px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#fff;
+  border-bottom:4px solid #d66a00;
+}
+.logo{font-size:20px;font-weight:700}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{color:#fff;text-decoration:none;font-weight:500}
+.nav-links a:hover{color:#ffe66d}
+.nav-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fff}
+
+/* ====== LOGIN / REGISTER PAGE ====== */
+.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .page {
@@ -31,7 +44,7 @@ body {
   border-radius: 24px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   max-width: 900px;
-  width: 100%;
+  margin: 40px auto;
 }
 
 .left {
@@ -68,7 +81,7 @@ body {
   text-align: center;
 }
 
-.right input {
+.right input, .right textarea {
   padding: 12px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -102,22 +115,276 @@ body {
   color: #0096c7;
   text-decoration: none;
 }
-/* Ingrandisce e migliora il campo "Nome gruppo" */
-.group-label {
-  font-size: 20px;
-  font-weight: 700;
-  color: #005fa3;
-  display: block;
+
+/* ====== POST & COMMENTI ====== */
+/* Layout centrale e minimal */
+.container {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 0 20px;
+ 
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #0096c7;
+}
+
+/* Form di pubblicazione */
+form {
+  margin-bottom: 30px;
+}
+
+form textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 16px;
+  resize: vertical;
+  background-color: #fdfdfd;
+}
+
+form button {
+  margin-top: 10px;
+  background-color: #0096c7;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0077a6;
+}
+
+/* Post */
+.post {
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  gap: 10px;
   margin-bottom: 6px;
 }
 
-.group-input {
+.post-author img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fcbf49;
+}
+
+.post-time {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.post-content {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* Like section */
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.like-btn {
+  background: none;
+  border: none;
   font-size: 18px;
-  padding: 14px 18px;
-  width: 100%;
-  border: 2px solid #0077c2;
+  cursor: pointer;
+}
+
+/* Commenti */
+.comment {
+  background-color: #f1f1f1;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.comment img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  vertical-align: middle;
+  object-fit: cover;
+  border: 2px solid #fcbf49;
+  margin-right: 6px;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Nuovo commento */
+.comment-form {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+.comment-form input[type="text"] {
+  flex: 1;
+  padding: 10px;
   border-radius: 8px;
-  background-color: #f0f8ff;
-  margin-bottom: 20px;
-  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+}
+
+.comment-form button {
+  padding: 8px 12px;
+  background-color: #f77f00;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Azioni del post */
+.post-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+}
+
+
+/* ====== GRUPPI ====== */
+.group-card {
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.group-card h4 {
+  color: #f77f00;
+}
+
+.group-card p {
+  margin: 5px 0;
+}
+
+.group-card form {
+  margin-top: 10px;
+}
+
+/* ====== PROFILO ====== */
+.profile-box {
+  max-width: 800px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 30px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #f77f00;
+}
+.profile-mini {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fcbf49;
+  background-color: white;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  color: #0096c7;
+}
+
+.upload-form input[type="file"] {
+  margin-top: 10px;
+}
+
+/* ====== ERROR BOX ====== */
+.error-box {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  padding: 10px;
+  border: 1px solid #cc0000;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* ====== BOTTONI GENERICI ====== */
+.btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #0096c7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0077a6;
+}
+
+.btn-danger {
+  background: #d62828;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #a61e1e;
+}
+
+/* ====== FORM GENERALE ====== */
+form {
+  margin-top: 15px;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  margin-bottom: 10px;
 }

@@ -8,8 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 $post_id = intval($_GET['id']);
 $user_id = $_SESSION['user_id'];
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
-
+include 'navbar.php';
 // Controlla che il post appartenga all'utente
 $check = $conn->prepare("SELECT id FROM posts WHERE id = ? AND user_id = ?");
 $check->bind_param("ii", $post_id, $user_id);

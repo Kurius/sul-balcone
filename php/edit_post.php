@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 $post_id = intval($_GET['id']);
 $user_id = $_SESSION['user_id'];
 
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
+include 'navbar.php';
 $stmt = $conn->prepare("SELECT content FROM posts WHERE id = ? AND user_id = ?");
 $stmt->bind_param("ii", $post_id, $user_id);
 $stmt->execute();
@@ -32,6 +32,8 @@ if ($row = $result->fetch_assoc()) {
     textarea { width: 100%; height: 150px; padding: 10px; font-size: 16px; }
     button { margin-top: 10px; padding: 10px 20px; }
   </style>
+    <link rel="stylesheet" href="../css/style.css">
+
 </head>
 <body>
   <h2>Modifica il tuo post</h2>

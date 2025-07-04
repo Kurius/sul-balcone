@@ -1,103 +1,205 @@
 <?php
-session_start();
+session_start(); 
+include 'navbar.php';
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
-$conn = new mysqli('localhost', 'root', '', 'sul_balcone');
 
-$users = $conn->query("
-  SELECT id, name,profile_picture FROM users
-  WHERE id != $user_id
+// Query amici
+$friends = $conn->query("SELECT id, name, profile_picture FROM users WHERE id IN (
+  SELECT CASE
+    WHEN sender_id = $user_id THEN receiver_id
+    WHEN receiver_id = $user_id THEN sender_id
+  END FROM friend_requests 
+  WHERE (sender_id = $user_id OR receiver_id = $user_id) AND status = 'accepted'
+)");
+
+// Ricevute
+$requests = $conn->query("SELECT friend_requests.id, users.name, users.profile_picture FROM friend_requests 
+  JOIN users ON users.id = friend_requests.sender_id 
+  WHERE friend_requests.receiver_id = $user_id AND friend_requests.status = 'pending'
+");
+
+// Inviate
+$sent = $conn->query("SELECT friend_requests.id, users.name, users.profile_picture FROM friend_requests 
+  JOIN users ON users.id = friend_requests.receiver_id 
+  WHERE friend_requests.sender_id = $user_id AND friend_requests.status = 'pending'
+");
+
+// Altri utenti
+$others = $conn->query("SELECT id, name, profile_picture FROM users WHERE id != $user_id 
   AND id NOT IN (
     SELECT CASE
       WHEN sender_id = $user_id THEN receiver_id
       WHEN receiver_id = $user_id THEN sender_id
-    END
-    FROM friend_requests
-    WHERE (sender_id = $user_id OR receiver_id = $user_id) AND status = 'accepted' OR status = 'pending'
+    END FROM friend_requests 
+    WHERE (sender_id = $user_id OR receiver_id = $user_id) AND status IN ('accepted', 'pending')
   )
 ");
-//richieste inviate
-$sent = $conn->query("
-  SELECT friend_requests.id, users.name,users.profile_picture, friend_requests.receiver_id
-  FROM friend_requests
-  JOIN users ON users.id = friend_requests.receiver_id
-  WHERE friend_requests.sender_id = $user_id AND friend_requests.status = 'pending'
-");
+$count_friends = $friends->num_rows;
+$count_requests = $requests->num_rows;
+$count_sent = $sent->num_rows;
+$count_others = $others->num_rows;
 
-// Richieste ricevute
-$requests = $conn->query("
-  SELECT friend_requests.id, users.name, friend_requests.sender_id, users.profile_picture
-  FROM friend_requests
-  JOIN users ON users.id = friend_requests.sender_id
-  WHERE friend_requests.receiver_id = $user_id AND friend_requests.status = 'pending'
-");
-
-// Lista amici
-$friends = $conn->query("
-  SELECT u.id, u.name, u.profile_picture FROM users u
-  WHERE u.id IN (
-    SELECT CASE
-      WHEN sender_id = $user_id THEN receiver_id
-      WHEN receiver_id = $user_id THEN sender_id
-    END
-    FROM friend_requests
-    WHERE (sender_id = $user_id OR receiver_id = $user_id) AND status = 'accepted'
-  )
-");
 ?>
 
+
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-  <title>Amici</title>
   <meta charset="UTF-8">
+  <title>Amici - Sul Balcone</title>
+  <link rel="stylesheet" href="../css/style.css">
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    h2 { margin-top: 30px; }
-    .user { margin-bottom: 10px; }
+    .tabs {
+      max-width: 900px;
+      margin: 40px auto;
+    }
+
+    .tab-buttons {
+      display: flex;
+      border-bottom: 3px solid #fcbf49;
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons button {
+      flex: 1;
+      padding: 12px 18px;
+      background: #fff;
+      border: none;
+      border-bottom: 4px solid transparent;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .tab-buttons button.active {
+      border-bottom-color: #f77f00;
+      background: #fdf0d5;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .friend-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      background-color: #f9f9f9;
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .friend-card .name {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .friend-card .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .friend-card .actions button,
+    .friend-card .actions a {
+      background-color: #f77f00;
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .friend-card .actions button:hover,
+    .friend-card .actions a:hover {
+      background-color: #d66a00;
+    }
   </style>
 </head>
 <body>
-    <?php include 'navbar.php'; ?>
 
-  <h1>I tuoi amici</h1>
-  <ul>
+<div class="tabs">
+<div class="tab-buttons">
+  <button class="active" onclick="openTab('amici')">👥 Amici (<?php echo $count_friends; ?>)</button>
+  <button onclick="openTab('ricevute')">📩 Ricevute (<?php echo $count_requests; ?>)</button>
+  <button onclick="openTab('inviate')">⏳ Inviate (<?php echo $count_sent; ?>)</button>
+  <button onclick="openTab('utenti')">🧑‍🤝‍🧑 Altri utenti (<?php echo $count_others; ?>)</button>
+</div>
+
+
+
+  <div id="amici" class="tab-content active section">
+    <h2>I tuoi amici</h2>
     <?php while($f = $friends->fetch_assoc()): ?>
-      <li><img src="../uploads/profile_pictures/<?php echo $f['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;"><?php echo htmlspecialchars($f['name']); ?></li>
+      <div class="friend-card">
+        <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $f['profile_picture'] ?? 'default.jpg'; ?>">
+        <span class="name"><?php echo htmlspecialchars($f['name']); ?></span>
+      </div>
     <?php endwhile; ?>
-  </ul>
+  </div>
 
-  <h2>Richieste ricevute</h2>
-  <?php while($r = $requests->fetch_assoc()): ?>
-    <div class="user">
-      <img src="../uploads/profile_pictures/<?php echo $r['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;">
-      <?php echo htmlspecialchars($r['name']); ?>
-      <a href="respond_friend.php?id=<?php echo $r['id']; ?>&action=accept">✅ Accetta</a>
-      <a href="respond_friend.php?id=<?php echo $r['id']; ?>&action=decline">❌ Rifiuta</a>
-    </div>
-  <?php endwhile; ?>
-  <h2>In attesa di risposta</h2>
-  <?php while($s = $sent->fetch_assoc()): ?>
-    <div class="user">
-      <ul><li><img src="../uploads/profile_pictures/<?php echo $s['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;"><?php echo htmlspecialchars($s['name']); ?>
-      ✋</li>
-    </div>
-  <?php endwhile; ?>
-  </ul>
-  <h2>Altri utenti</h2>
-  <?php while($u = $users->fetch_assoc()): ?>
-    <div class="user">
-      <img src="../uploads/profile_pictures/<?php echo $u['profile_picture'] ?? 'default.jpg'; ?>" width="40" height="40" style="border-radius:50%; vertical-align:middle;">
-      <?php echo htmlspecialchars($u['name']); ?>
-      <form action="send_friend.php" method="POST" style="display:inline;">
-        <input type="hidden" name="receiver_id" value="<?php echo $u['id']; ?>">
-        <button type="submit">➕ Aggiungi amico</button>
-      </form>
-    </div>
-  <?php endwhile; ?>
+  <div id="ricevute" class="tab-content section">
+    <h2>Richieste ricevute</h2>
+    <?php while($r = $requests->fetch_assoc()): ?>
+      <div class="friend-card">
+        <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $r['profile_picture'] ?? 'default.jpg'; ?>">
+        <span class="name"><?php echo htmlspecialchars($r['name']); ?></span>
+        <div class="actions">
+          <a href="respond_friend.php?id=<?php echo $r['id']; ?>&action=accept">✅</a>
+          <a href="respond_friend.php?id=<?php echo $r['id']; ?>&action=decline">❌</a>
+        </div>
+      </div>
+    <?php endwhile; ?>
+  </div>
+
+  <div id="inviate" class="tab-content section">
+    <h2>Richieste inviate</h2>
+    <?php while($s = $sent->fetch_assoc()): ?>
+      <div class="friend-card">
+        <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $s['profile_picture'] ?? 'default.jpg'; ?>">
+        <span class="name"><?php echo htmlspecialchars($s['name']); ?></span>
+        <span class="actions">✋ In attesa</span>
+      </div>
+    <?php endwhile; ?>
+  </div>
+
+  <div id="utenti" class="tab-content section">
+    <h2>Altri utenti</h2>
+    <?php while($u = $others->fetch_assoc()): ?>
+      <div class="friend-card">
+        <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $u['profile_picture'] ?? 'default.jpg'; ?>">
+        <span class="name"><?php echo htmlspecialchars($u['name']); ?></span>
+        <form action="send_friend.php" method="POST" class="actions">
+          <input type="hidden" name="receiver_id" value="<?php echo $u['id']; ?>">
+          <button type="submit">➕ Aggiungi</button>
+        </form>
+      </div>
+    <?php endwhile; ?>
+  </div>
+</div>
+
+<script>
+  function openTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector(`[onclick="openTab('${id}')"]`).classList.add('active');
+  }
+</script>
+
 </body>
 </html>
