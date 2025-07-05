@@ -1,6 +1,5 @@
 <?php 
 include 'navbar.php';
-session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
@@ -73,6 +72,19 @@ body{
   font-weight: bold;
 }
 
+.custom-file-input {
+  display: block;
+  margin: 20px auto 10px;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #333;
+  background-color: #fcbf49;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  width: fit-content;
+}
 
 
 
@@ -87,7 +99,7 @@ body{
     <img src="<?php echo $user['profile_picture'] ? '../uploads/profile_pictures/' . $user['profile_picture'] : '../uploads/profile_pictures/default.jpg'; ?>" alt="Profilo">
 
     <form action="upload_profile_picture.php" method="POST" enctype="multipart/form-data">
-      <input type="file" name="profile_picture" accept="image/*" required><br>
+<input type="file" name="profile_picture" accept="image/*" required class="custom-file-input">
       <button type="submit">Carica</button>
     </form>
 

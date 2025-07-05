@@ -8,6 +8,12 @@ $conn = new mysqli('localhost', 'root', '', 'my_dalbalcone');
 $user_id = $_SESSION['user_id'] ?? null;
 $profile_img = 'default.png';
 
+if (isset($_SESSION['user_id'])) {
+  $stmt = $conn->prepare("UPDATE users SET last_active = NOW() WHERE id = ?");
+  $stmt->bind_param("i", $_SESSION['user_id']);
+  $stmt->execute();
+}
+
 if ($user_id) {
     $stmt = $conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);

@@ -65,10 +65,13 @@ $conn->close();
     <?php echo htmlspecialchars($post['name']); ?></div>
     <div class="post-time"><?php echo date("d/m/Y H:i", strtotime($post['created_at'])); ?></div>
     <div class="post-content"><?php echo nl2br(htmlspecialchars($post['content'])); ?></div>
- <div class="post-actions" style="margin-top: 10px;">
+<?php if ($post['user_id'] == $_SESSION['user_id']): ?>
+  <div class="post-actions" style="margin-top: 10px;">
     <a href="edit_post.php?id=<?php echo $post['id']; ?>" style="margin-right: 10px;">✏️ Modifica</a>
     <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Sei sicuro di voler eliminare questo post?');">🗑️ Elimina</a>
   </div>
+<?php endif; ?>
+
     <div class="like-section">
       <button class="like-btn" data-post-id="<?php echo $post['id']; ?>">
         <?php echo $post['user_liked'] ? "❤️" : "🩶"; ?>
@@ -109,9 +112,7 @@ $conn->close();
       <button type="submit">Invia</button>
     </form>
   </div>
-  <?php if ($post['user_id'] == $_SESSION['user_id']): ?>
- 
-<?php endif; ?>
+
 
 <?php endforeach; ?>
 

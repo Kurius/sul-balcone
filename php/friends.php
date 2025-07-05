@@ -10,13 +10,14 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Query amici
-$friends = $conn->query("SELECT id, name, profile_picture FROM users WHERE id IN (
+$friends = $conn->query("SELECT id, name, profile_picture, last_active FROM users WHERE id IN (
   SELECT CASE
     WHEN sender_id = $user_id THEN receiver_id
     WHEN receiver_id = $user_id THEN sender_id
   END FROM friend_requests 
   WHERE (sender_id = $user_id OR receiver_id = $user_id) AND status = 'accepted'
 )");
+
 
 // Ricevute
 $requests = $conn->query("SELECT friend_requests.id, users.name, users.profile_picture FROM friend_requests 
@@ -142,15 +143,33 @@ $count_others = $others->num_rows;
 
 
 
-  <div id="amici" class="tab-content active section">
-    <h2>I tuoi amici</h2>
-    <?php while($f = $friends->fetch_assoc()): ?>
-      <div class="friend-card">
-        <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $f['profile_picture'] ?? 'default.jpg'; ?>">
-        <span class="name"><?php echo htmlspecialchars($f['name']); ?></span>
+<div id="amici" class="tab-content active section">
+  <h2>I tuoi amici</h2>
+  <?php while($f = $friends->fetch_assoc()): ?>
+    <?php
+      $friend_id = $f['id'];
+      $result = $conn->query("SELECT last_active FROM users WHERE id = $friend_id");
+      $last_activity = $result->fetch_assoc()['last_active'] ?? null;
+
+      $is_online = false;
+      if ($last_activity) {
+        $last_time = strtotime($last_activity);
+        $is_online = (time() - $last_time <= 60); // 5 minuti
+      }
+    ?>
+    <div class="friend-card">
+      <img class="profile-mini" src="../uploads/profile_pictures/<?php echo $f['profile_picture'] ?? 'default.jpg'; ?>">
+      <span class="name"><?php echo htmlspecialchars($f['name']); ?></span>
+      <span class="status" style="color: <?php echo $is_online ? 'green' : 'gray'; ?>;">
+        <?php echo $is_online ? '🟢 Online' : '⚫ Offline'; ?>
+      </span>
+      <div class="actions">
+        <a href="chat.php?user_id=<?php echo $friend_id; ?>">💬 Chat</a>
       </div>
-    <?php endwhile; ?>
-  </div>
+    </div>
+  <?php endwhile; ?>
+</div>
+
 
   <div id="ricevute" class="tab-content section">
     <h2>Richieste ricevute</h2>
